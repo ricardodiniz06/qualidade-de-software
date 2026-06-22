@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Post } from "@/service/types";
+import CommentSection from "./CommentSection";
+import { MessageSquare } from "lucide-react";
 
 interface PostCardProps {
   post: Post;
@@ -19,6 +21,7 @@ export default function PostCard({
   const [liked, setLiked] = useState(post.liked);
   const [disliked, setDisliked] = useState(post.disliked);
   const [isLoading, setIsLoading] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   async function handleLike() {
     if (!isAuthenticated) {
@@ -118,6 +121,26 @@ export default function PostCard({
         }}
       >
         <button
+          onClick={() => setShowComments(!showComments)}
+          style={{
+            background: showComments ? "var(--border)" : "transparent",
+            color: "var(--foreground)",
+            border: `2px solid var(--border)`,
+            padding: "0.5rem 1.25rem",
+            borderRadius: "0.375rem",
+            cursor: "pointer",
+            fontWeight: "500",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            transition: "all 0.2s",
+          }}
+        >
+          <MessageSquare size={18} />
+          <span>{showComments ? "Ocultar" : "Comentários"}</span>
+        </button>
+
+        <button
           onClick={handleLike}
           disabled={isLoading}
           style={{
@@ -177,6 +200,8 @@ export default function PostCard({
           <span>{isLoading ? "..." : disliked ? "Não Curtiu" : "Dislike"}</span>
         </button>
       </div>
+
+      {showComments && <CommentSection postId={post.id} />}
     </div>
   );
 }

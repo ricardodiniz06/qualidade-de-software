@@ -21,6 +21,20 @@ test.describe('Fluxo de Cadastro (Signup)', () => {
     await expect(page).toHaveURL('/', { timeout: 10_000 });
   });
 
+  test('[BUG] senha com ! é rejeitada incorretamente por falta de caractere especial', async ({ page }) => {
+    const email = `pwd.${uuidv4().substring(0, 8)}@test.com`;
+    const senhaComExclamacao = 'Forte!123';
+
+    await page.goto('/signup');
+    await page.getByRole('textbox', { name: /e-mail/i }).fill(email);
+    await page.getByLabel(/^Senha$/i).fill(senhaComExclamacao);
+    await page.getByLabel(/Confirmar Senha/i).fill(senhaComExclamacao);
+    await page.getByRole('button', { name: /criar conta/i }).click();
+
+    await expect(page.getByText(/caractere especial/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page).toHaveURL(/signup/);
+  });
+
   test('[E2E] cadastro com e-mail duplicado exibe mensagem de erro', async ({ page }) => {
     const email = `dup.${uuidv4().substring(0, 8)}@test.com`;
 
