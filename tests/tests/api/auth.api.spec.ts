@@ -38,7 +38,8 @@ test.describe('API - POST /auth/signup', () => {
     expect(response.status()).toBe(409);
     const body = await response.json();
     // Requisito seria "E-mail já cadastrado", mas o atual é "E-mail já está em uso"
-    expect(body.message).toContain('E-mail já está em uso');
+    // O teste vai falhar propositalmente aqui para mostrar o bug capturado!
+    expect(body.message).toContain('E-mail já cadastrado');
   });
 
   test('[API] signup com senha fraca retorna 422 com mensagem de erro', async ({ request }) => {

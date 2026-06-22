@@ -107,13 +107,9 @@ class AuthControllerIntegrationTest {
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isConflict()) // 409 está correto
-                // BUG B2: A mensagem real é "E-mail já está em uso"
-                // O requisito especifica "E-mail já cadastrado"
-                // O teste abaixo verifica o comportamento ATUAL (bugado):
-                .andExpect(jsonPath("$.message").value("E-mail já está em uso"))
-                // Se o bug for corrigido, a mensagem deve ser:
-                // .andExpect(jsonPath("$.message").value("E-mail já cadastrado"))
-                ;
+                // Teste configurado para FALHAR capturando o bug da API
+                // O requisito especifica "E-mail já cadastrado", mas a API retorna "E-mail já está em uso"
+                .andExpect(jsonPath("$.message").value("E-mail já cadastrado"));
     }
 
     // =========================================================

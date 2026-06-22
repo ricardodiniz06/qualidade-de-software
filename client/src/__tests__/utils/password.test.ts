@@ -18,10 +18,10 @@ describe('utils/password', () => {
       expect(isPasswordValid('Abc@12')).toBe(false);
     });
 
-    test('[BUG] senha com exatamente 8 caracteres retorna false (deveria ser true)', () => {
+    test('[BUG] senha com exatamente 8 caracteres deveria ser válida (UI bloqueia erradamente)', () => {
       // BUG DOCUMENTADO: A lógica atual usa length <= 8, rejeitando senhas com 8 chars exatos
-      // O backend usa regex {8,} que aceita 8 chars.
-      expect(isPasswordValid('Forte@12')).toBe(false); // Deveria ser true se fosse consistente com o backend
+      // Teste configurado para FALHAR e capturar o bug (espera true, mas o app retorna false)
+      expect(isPasswordValid('Forte@12')).toBe(true); 
     });
   });
 

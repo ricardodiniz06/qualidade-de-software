@@ -62,8 +62,8 @@ test.describe('Fluxo de Login (Signin)', () => {
 
   test('[E2E] login com credenciais erradas exibe "Credenciais inválidas"', async ({ page }) => {
     await page.goto('/signin');
-    await page.getByRole('textbox', { name: /e-mail/i }).fill('naoexiste@email.com');
-    await page.getByLabel(/senha/i).fill('SenhaErrada@1');
+    await page.getByPlaceholder('seu@email.com').fill('naoexiste@email.com');
+    await page.getByPlaceholder('••••••••').fill('SenhaErrada@1');
     await page.getByRole('button', { name: /entrar/i }).click();
 
     await expect(page.getByText(/credenciais inválidas/i)).toBeVisible({ timeout: 8_000 });
