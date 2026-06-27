@@ -60,15 +60,7 @@ public class CommentService {
     @Transactional
     public void removeLikeComment(Long commentId, Long userId) {
         Optional<CommentLike> like = commentLikeRepository.findByCommentIdAndUserId(commentId, userId);
-        if (like.isPresent()) {
-            // BUG INTENCIONAL AQUI:
-            // Em vez de deletar o 'like' (commentLikeRepository.delete(like.get())),
-            // O desenvolvedor cometeu um erro grave e chamou o commentRepository
-            // Isso vai deletar o comentário inteiro!
-            Comment comment = commentRepository.findById(commentId)
-                    .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
-            commentRepository.delete(comment);
-        }
+        like.ifPresent(commentLikeRepository::delete);
     }
 
     private CommentResponse mapToResponse(Comment comment, Long currentUserId) {

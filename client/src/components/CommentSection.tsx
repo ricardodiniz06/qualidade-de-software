@@ -51,9 +51,19 @@ export default function CommentSection({ postId }: CommentSectionProps) {
       return;
     }
 
-    // Otimista: ao descurtir, o bug no backend apaga o comentário inteiro
     if (isCurrentlyLiked) {
-      setComments((prev) => prev.filter((c) => c.id !== commentId));
+      setComments((prev) =>
+        prev.map((c) => {
+          if (c.id === commentId) {
+            return {
+              ...c,
+              likedByMe: false,
+              likeCount: Math.max(0, c.likeCount - 1),
+            };
+          }
+          return c;
+        })
+      );
     } else {
       setComments((prev) =>
         prev.map((c) => {

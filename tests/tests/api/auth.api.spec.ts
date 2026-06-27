@@ -24,7 +24,7 @@ test.describe('API - POST /auth/signup', () => {
     expect(body.id).toBeGreaterThan(0);
   });
 
-  test('[API-BUG B2] signup com e-mail duplicado retorna 409 e "E-mail já está em uso"', async ({ request }) => {
+  test('[API] signup com e-mail duplicado retorna 409 e "E-mail já cadastrado"', async ({ request }) => {
     const email = `dup.api.${uuidv4().substring(0, 8)}@test.com`;
 
     await request.post(`${BASE}/auth/signup`, {
@@ -37,8 +37,6 @@ test.describe('API - POST /auth/signup', () => {
 
     expect(response.status()).toBe(409);
     const body = await response.json();
-    // Requisito seria "E-mail já cadastrado", mas o atual é "E-mail já está em uso"
-    // O teste vai falhar propositalmente aqui para mostrar o bug capturado!
     expect(body.message).toContain('E-mail já cadastrado');
   });
 

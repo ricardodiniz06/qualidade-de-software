@@ -51,8 +51,7 @@ test.describe('Fluxo de Cadastro (Signup)', () => {
     
     await page.getByRole('button', { name: /criar conta/i }).click();
 
-    // BUG B2: Mensagem que a API retorna é "E-mail já está em uso"
-    await expect(page.getByText(/e-mail já está em uso/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/e-mail já cadastrado/i)).toBeVisible({ timeout: 8_000 });
   });
 
 });

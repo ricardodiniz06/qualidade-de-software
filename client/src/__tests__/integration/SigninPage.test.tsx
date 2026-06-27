@@ -1,18 +1,24 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { AxiosError } from 'axios';
 import SigninPage from '@/app/signin/page';
-import { authService } from '@/service/auth/auth';
-import { useAuth } from '@/contexts/AuthContext';
+import { authService } from '../../service/auth/auth';
+import { useAuth } from '../../contexts/AuthContext';
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn() }),
 }));
 
-jest.mock('@/contexts/AuthContext', () => ({
+jest.mock('@/components/Header', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('../../contexts/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
-jest.mock('@/service/auth/auth', () => ({
+jest.mock('../../service/auth/auth', () => ({
   authService: {
     signIn: jest.fn(),
   },
@@ -69,9 +75,12 @@ describe('SigninPage', () => {
   });
 
   test('[SUCESSO] exibe mensagem de erro quando login falha', async () => {
-    (authService.signIn as jest.Mock).mockRejectedValueOnce({
-      response: { data: { message: 'Credenciais inválidas' } },
-    });
+    (authService.signIn as jest.Mock).mockRejectedValueOnce(
+      new AxiosError('Unauthorized', '401', undefined, undefined, {
+        status: 401,
+        data: { message: 'Credenciais inválidas' },
+      } as never)
+    );
 
     render(<SigninPage />);
     
