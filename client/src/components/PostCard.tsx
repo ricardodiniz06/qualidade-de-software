@@ -167,7 +167,7 @@ export default function PostCard({
           }}
         >
           <span style={{ fontSize: "1.25rem" }}>{liked ? "❤️" : "🤍"}</span>
-          <span>{isLoading ? "..." : liked ? "Curtido" : "Curtir"}</span>
+          <span>{isLoading ? "..." : liked ? "Curtido!" : "Curtir"}</span>
         </button>
 
         <button
