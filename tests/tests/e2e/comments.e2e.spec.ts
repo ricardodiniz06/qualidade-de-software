@@ -13,9 +13,9 @@ async function loginAsNewUser(page: import('@playwright/test').Page) {
   });
 
   await page.goto('/signin');
-  await page.getByRole('textbox', { name: /e-mail/i }).fill(email);
+  await page.getByRole('textbox', { name: /email/i }).fill(email);
   await page.getByLabel(/senha/i).fill('Forte@123');
-  await page.getByRole('button', { name: /entrar/i }).click();
+  await page.getByRole('main').getByRole('button', { name: /entrar/i }).click();
   await expect(page).toHaveURL('/', { timeout: 10_000 });
 
   return email;
