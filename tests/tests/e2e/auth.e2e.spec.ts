@@ -16,7 +16,7 @@ test.describe('Fluxo de Cadastro (Signup)', () => {
     await page.getByLabel(/^Senha$/i).fill('Forte@123');
     await page.getByLabel(/Confirmar Senha/i).fill('Forte@123');
 
-    await page.getByRole('button', { name: /criar conta/i }).click();
+    await page.getByRole('main').getByRole('button', { name: /criar conta/i }).click();
 
     await expect(page).toHaveURL('/', { timeout: 10_000 });
   });
@@ -29,7 +29,7 @@ test.describe('Fluxo de Cadastro (Signup)', () => {
     await page.getByRole('textbox', { name: /email/i }).fill(email);
     await page.getByLabel(/^Senha$/i).fill(senhaComExclamacao);
     await page.getByLabel(/Confirmar Senha/i).fill(senhaComExclamacao);
-    await page.getByRole('button', { name: /criar conta/i }).click();
+    await page.getByRole('main').getByRole('button', { name: /criar conta/i }).click();
 
     // Com o bug corrigido, deve ser redirecionado para a home.
     await expect(page).toHaveURL('/', { timeout: 10_000 });
@@ -49,7 +49,7 @@ test.describe('Fluxo de Cadastro (Signup)', () => {
     await page.getByLabel(/^Senha$/i).fill('Forte@123');
     await page.getByLabel(/Confirmar Senha/i).fill('Forte@123');
     
-    await page.getByRole('button', { name: /criar conta/i }).click();
+    await page.getByRole('main').getByRole('button', { name: /criar conta/i }).click();
 
     await expect(page.getByText(/e-mail já cadastrado/i)).toBeVisible({ timeout: 8_000 });
   });
