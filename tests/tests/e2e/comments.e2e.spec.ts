@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 async function loginAsNewUser(page: import('@playwright/test').Page) {
   const email = `comments.${uuidv4().substring(0, 8)}@test.com`;
 
-  await page.request.post('http://localhost:8080/auth/signup', {
+  await page.request.post('http://127.0.0.1:8080/auth/signup', {
     data: { email, password: 'Forte@123' },
   });
 

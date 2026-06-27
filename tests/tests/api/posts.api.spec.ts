@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { v4 as uuidv4 } from 'uuid';
 
-const BASE = 'http://localhost:8080';
+const BASE = 'http://127.0.0.1:8080';
 
 /**
  * TESTES DE API (Caixa-Preta) — Posts e Reações

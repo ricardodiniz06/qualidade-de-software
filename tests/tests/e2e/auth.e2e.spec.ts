@@ -39,7 +39,7 @@ test.describe('Fluxo de Cadastro (Signup)', () => {
     const email = `dup.${uuidv4().substring(0, 8)}@test.com`;
 
     // Cadastro via API
-    const resp = await page.request.post('http://localhost:8080/auth/signup', {
+    const resp = await page.request.post('http://127.0.0.1:8080/auth/signup', {
       data: { email, password: 'Forte@123' },
     });
     expect(resp.ok()).toBeTruthy();
@@ -61,7 +61,7 @@ test.describe('Fluxo de Login (Signin)', () => {
   test('[E2E] login com credenciais corretas redireciona para home', async ({ page }) => {
     const email = `login.${uuidv4().substring(0, 8)}@test.com`;
 
-    await page.request.post('http://localhost:8080/auth/signup', {
+    await page.request.post('http://127.0.0.1:8080/auth/signup', {
       data: { email, password: 'Forte@123' },
     });
 
@@ -109,7 +109,7 @@ test.describe('Reações: Like e Dislike (Atividade 6)', () => {
   test('[E2E] usuário logado pode curtir e descurtir um post, validando UI', async ({ page }) => {
     const email = `reactions.${uuidv4().substring(0, 8)}@test.com`;
 
-    await page.request.post('http://localhost:8080/auth/signup', {
+    await page.request.post('http://127.0.0.1:8080/auth/signup', {
       data: { email, password: 'Forte@123' },
     });
 
