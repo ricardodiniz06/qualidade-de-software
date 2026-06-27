@@ -90,8 +90,8 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("[BUG-B2] POST /auth/signup — email duplicado retorna 409, mas mensagem é 'E-mail já está em uso' em vez de 'E-mail já cadastrado'")
-    void signup_emailDuplicado_retorna409_comMensagemBugada() throws Exception {
+    @DisplayName("[SUCESSO] POST /auth/signup — email duplicado retorna 409 com mensagem correta")
+    void signup_emailDuplicado_retorna409_comMensagemCorreta() throws Exception {
         var body = Map.of("email", uniqueEmail, "password", "Forte@123");
         String json = objectMapper.writeValueAsString(body);
 
@@ -106,9 +106,7 @@ class AuthControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
-                .andExpect(status().isConflict()) // 409 está correto
-                // Teste configurado para FALHAR capturando o bug da API
-                // O requisito especifica "E-mail já cadastrado", mas a API retorna "E-mail já está em uso"
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("E-mail já cadastrado"));
     }
 
