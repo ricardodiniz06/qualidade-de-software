@@ -58,16 +58,19 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: maven
           
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './client/package-lock.json'
           
       - name: Start API
         run: |
           mvn -B spring-boot:run -Dspring-boot.run.profiles=test &
-          sleep 15
+          npx wait-on -t 120000 tcp:127.0.0.1:8080
         working-directory: ./api
         
       - name: Start Client
@@ -75,7 +78,7 @@ jobs:
           npm ci
           npm run build
           npm start &
-          sleep 10
+          npx wait-on -t 60000 tcp:127.0.0.1:3000
         working-directory: ./client
         
       - name: Install Playwright Dependencies
