@@ -1,18 +1,24 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { AxiosError } from 'axios';
 import SignupPage from '@/app/signup/page';
-import { authService } from '@/service/auth/auth';
-import { useAuth } from '@/contexts/AuthContext';
+import { authService } from '../../service/auth/auth';
+import { useAuth } from '../../contexts/AuthContext';
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn() }),
 }));
 
-jest.mock('@/contexts/AuthContext', () => ({
+jest.mock('@/components/Header', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('../../contexts/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
-jest.mock('@/service/auth/auth', () => ({
+jest.mock('../../service/auth/auth', () => ({
   authService: {
     signUp: jest.fn(),
   },
@@ -77,10 +83,12 @@ describe('SignupPage', () => {
   });
 
   test('[SUCESSO] exibe erro quando API retorna conflito de email', async () => {
-    // API real retorna "E-mail já está em uso", mas o requisito fala "E-mail já cadastrado"
-    (authService.signUp as jest.Mock).mockRejectedValueOnce({
-      response: { data: { message: 'E-mail já está em uso' } },
-    });
+    (authService.signUp as jest.Mock).mockRejectedValueOnce(
+      new AxiosError('Conflict', '409', undefined, undefined, {
+        status: 409,
+        data: { message: 'E-mail já cadastrado' },
+      } as never)
+    );
 
     render(<SignupPage />);
     
@@ -95,7 +103,7 @@ describe('SignupPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /Criar Conta/i }));
     
     await waitFor(() => {
-      expect(screen.getByText('E-mail já está em uso')).toBeInTheDocument();
+      expect(screen.getByText('E-mail já cadastrado')).toBeInTheDocument();
     });
   });
 });

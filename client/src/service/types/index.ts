@@ -30,6 +30,23 @@ export interface Post {
   disliked: boolean;
 }
 
+export interface Comment {
+  id: number;
+  postId: number;
+  authorEmail: string;
+  content: string;
+  createdAt: string;
+  likeCount: number;
+  likedByMe: boolean;
+}
+
+export interface AuthResponse {
+  posts: Post[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
 export interface PostsResponse {
   posts: Post[];
   total: number;

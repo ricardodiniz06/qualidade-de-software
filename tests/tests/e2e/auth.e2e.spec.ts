@@ -12,12 +12,26 @@ test.describe('Fluxo de Cadastro (Signup)', () => {
 
     await page.goto('/signup');
 
-    await page.getByRole('textbox', { name: /e-mail/i }).fill(email);
+    await page.getByRole('textbox', { name: /email/i }).fill(email);
     await page.getByLabel(/^Senha$/i).fill('Forte@123');
     await page.getByLabel(/Confirmar Senha/i).fill('Forte@123');
 
-    await page.getByRole('button', { name: /criar conta/i }).click();
+    await page.getByRole('main').getByRole('button', { name: /criar conta/i }).click();
 
+    await expect(page).toHaveURL('/', { timeout: 10_000 });
+  });
+
+  test('[E2E] senha com ! é aceita corretamente como caractere especial', async ({ page }) => {
+    const email = `pwd.${uuidv4().substring(0, 8)}@test.com`;
+    const senhaComExclamacao = 'Forte!123';
+
+    await page.goto('/signup');
+    await page.getByRole('textbox', { name: /email/i }).fill(email);
+    await page.getByLabel(/^Senha$/i).fill(senhaComExclamacao);
+    await page.getByLabel(/Confirmar Senha/i).fill(senhaComExclamacao);
+    await page.getByRole('main').getByRole('button', { name: /criar conta/i }).click();
+
+    // Com o bug corrigido, deve ser redirecionado para a home.
     await expect(page).toHaveURL('/', { timeout: 10_000 });
   });
 
@@ -25,20 +39,19 @@ test.describe('Fluxo de Cadastro (Signup)', () => {
     const email = `dup.${uuidv4().substring(0, 8)}@test.com`;
 
     // Cadastro via API
-    const resp = await page.request.post('http://localhost:8080/auth/signup', {
+    const resp = await page.request.post('http://127.0.0.1:8080/auth/signup', {
       data: { email, password: 'Forte@123' },
     });
     expect(resp.ok()).toBeTruthy();
 
     await page.goto('/signup');
-    await page.getByRole('textbox', { name: /e-mail/i }).fill(email);
+    await page.getByRole('textbox', { name: /email/i }).fill(email);
     await page.getByLabel(/^Senha$/i).fill('Forte@123');
     await page.getByLabel(/Confirmar Senha/i).fill('Forte@123');
     
-    await page.getByRole('button', { name: /criar conta/i }).click();
+    await page.getByRole('main').getByRole('button', { name: /criar conta/i }).click();
 
-    // BUG B2: Mensagem que a API retorna é "E-mail já está em uso"
-    await expect(page.getByText(/e-mail já está em uso/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/e-mail já cadastrado/i)).toBeVisible({ timeout: 8_000 });
   });
 
 });
@@ -48,14 +61,14 @@ test.describe('Fluxo de Login (Signin)', () => {
   test('[E2E] login com credenciais corretas redireciona para home', async ({ page }) => {
     const email = `login.${uuidv4().substring(0, 8)}@test.com`;
 
-    await page.request.post('http://localhost:8080/auth/signup', {
+    await page.request.post('http://127.0.0.1:8080/auth/signup', {
       data: { email, password: 'Forte@123' },
     });
 
     await page.goto('/signin');
-    await page.getByRole('textbox', { name: /e-mail/i }).fill(email);
+    await page.getByRole('textbox', { name: /email/i }).fill(email);
     await page.getByLabel(/senha/i).fill('Forte@123');
-    await page.getByRole('button', { name: /entrar/i }).click();
+    await page.getByRole('main').getByRole('button', { name: /entrar/i }).click();
 
     await expect(page).toHaveURL('/', { timeout: 10_000 });
   });
@@ -64,7 +77,7 @@ test.describe('Fluxo de Login (Signin)', () => {
     await page.goto('/signin');
     await page.getByPlaceholder('seu@email.com').fill('naoexiste@email.com');
     await page.getByPlaceholder('••••••••').fill('SenhaErrada@1');
-    await page.getByRole('button', { name: /entrar/i }).click();
+    await page.getByRole('main').getByRole('button', { name: /entrar/i }).click();
 
     await expect(page.getByText(/credenciais inválidas/i)).toBeVisible({ timeout: 8_000 });
   });
@@ -96,14 +109,14 @@ test.describe('Reações: Like e Dislike (Atividade 6)', () => {
   test('[E2E] usuário logado pode curtir e descurtir um post, validando UI', async ({ page }) => {
     const email = `reactions.${uuidv4().substring(0, 8)}@test.com`;
 
-    await page.request.post('http://localhost:8080/auth/signup', {
+    await page.request.post('http://127.0.0.1:8080/auth/signup', {
       data: { email, password: 'Forte@123' },
     });
 
     await page.goto('/signin');
-    await page.getByRole('textbox', { name: /e-mail/i }).fill(email);
+    await page.getByRole('textbox', { name: /email/i }).fill(email);
     await page.getByLabel(/senha/i).fill('Forte@123');
-    await page.getByRole('button', { name: /entrar/i }).click();
+    await page.getByRole('main').getByRole('button', { name: /entrar/i }).click();
     await expect(page).toHaveURL('/', { timeout: 10_000 });
 
     const likeBtn = page.getByRole('button', { name: /curtir/i }).first();
