@@ -27,7 +27,7 @@ export interface Post {
   title: string;
   body: string;
   liked: boolean;
-  reactionType?: "like" | "dislike";
+  disliked: boolean;
 }
 
 export interface Comment {
